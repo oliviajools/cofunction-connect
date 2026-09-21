@@ -10,6 +10,7 @@ export interface DemoStore {
   regeln: Regel[];
   protokoll: ProtokollPunkt[];
   verknuepfungen: { a: string; b: string }[];
+  bereichVerknuepfungen: { a: string; b: string }[];
   zuordnungen: { eintragId: string; von: string | null; nach: string | null; nutzer: string; am: string }[];
   dateien: Map<string, { daten: Uint8Array; typ: string }>;
 }
@@ -237,6 +238,11 @@ export function demoDaten(): DemoStore {
     verknuepfungen: [
       { a: "e-kickoff", b: "e-testbatterie" },
       { a: "e-trainerteam", b: "e-vortrag-folien" },
+    ],
+    bereichVerknuepfungen: [
+      { a: "p-hockey", b: "p-ausbildung" },
+      { a: "p-hockey", b: "r-studien" },
+      { a: "p-vortrag", b: "r-folien" },
     ],
     zuordnungen: [],
     dateien: new Map(),

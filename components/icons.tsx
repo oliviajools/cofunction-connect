@@ -97,6 +97,16 @@ export const IconRegeln = (p: P) => (
     <circle cx="18" cy="18" r="2" />
   </Basis>
 );
+
+export const IconMindmap = (p: P) => (
+  <Basis {...p}>
+    <circle cx="12" cy="5" r="2.5" />
+    <circle cx="5" cy="12" r="2.5" />
+    <circle cx="19" cy="12" r="2.5" />
+    <circle cx="12" cy="19" r="2.5" />
+    <path d="M11 7 7 10M13 7 17 10M7 14l4 3m6-3-4 3" />
+  </Basis>
+);
 export const IconPlus = (p: P) => (
   <Basis {...p}>
     <path d="M12 5v14M5 12h14" />

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { aktiv } from "./kopf-nav";
-import { IconEingang, IconMikro, IconOrdner, IconSuche, IconUebersicht } from "./icons";
+import { IconEingang, IconMikro, IconMindmap, IconOrdner, IconSuche, IconUebersicht } from "./icons";
 
 export function MobilLeiste({ eingang }: { eingang: number }) {
   const pfad = usePathname();
@@ -42,6 +42,7 @@ export function MobilLeiste({ eingang }: { eingang: number }) {
           Erfassen
         </Link>
         {punkt("/bereiche", "Bereiche", IconOrdner)}
+        {punkt("/mindmap", "Mindmap", IconMindmap)}
         {punkt("/suche", "Suche", IconSuche)}
       </div>
     </nav>

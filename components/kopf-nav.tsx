@@ -7,6 +7,7 @@ const PUNKTE = [
   { href: "/", text: "Übersicht" },
   { href: "/eingang", text: "Eingang" },
   { href: "/bereiche", text: "Bereiche" },
+  { href: "/mindmap", text: "Mindmap" },
   { href: "/suche", text: "Suche" },
   { href: "/regelwerk", text: "Regelwerk" },
 ];

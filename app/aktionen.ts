@@ -193,6 +193,20 @@ export async function entknuepfen(a: string, b: string): Promise<Ergebnis> {
   return { ok: true };
 }
 
+export async function bereichVerknuepfen(a: string, b: string): Promise<Ergebnis> {
+  if (!Id.safeParse(a).success || !Id.safeParse(b).success || a === b) return { ok: false, fehler: "Ungültige Angaben" };
+  await (await getRepo()).bereichVerknuepfen(a, b);
+  neuLaden();
+  return { ok: true };
+}
+
+export async function bereichEntknuepfen(a: string, b: string): Promise<Ergebnis> {
+  if (!Id.safeParse(a).success || !Id.safeParse(b).success) return { ok: false, fehler: "Ungültige Angaben" };
+  await (await getRepo()).bereichEntknuepfen(a, b);
+  neuLaden();
+  return { ok: true };
+}
+
 export async function verknuepfungSuchen(q: string, ausser: string): Promise<{ id: string; titel: string; bereich: string }[]> {
   if (q.trim().length < 2) return [];
   const treffer = await (await getRepo()).eintraege({ suche: q, limit: 8 });

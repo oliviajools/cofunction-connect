@@ -161,6 +161,29 @@ export interface BereichZaehler {
   meetings: number;
 }
 
+export interface BereichVerknuepfung {
+  a: string;
+  b: string;
+}
+
+export interface MindmapKnoten {
+  id: string;
+  name: string;
+  art: BereichArt;
+  sichtbarkeit: Sichtbarkeit;
+}
+
+export interface MindmapKante {
+  von: string;
+  nach: string;
+  typ: "eltern" | "explizit";
+}
+
+export interface MindmapDaten {
+  knoten: MindmapKnoten[];
+  kanten: MindmapKante[];
+}
+
 /**
  * Zugriffsschicht. Zwei Implementierungen:
  * - DemoRepo: im Speicher, mit Beispieldaten (läuft ohne Konfiguration)
@@ -208,6 +231,11 @@ export interface Repo {
   verknuepfungen(eintragId: string): Promise<EintragVoll[]>;
   verknuepfen(a: string, b: string): Promise<void>;
   entknuepfen(a: string, b: string): Promise<void>;
+
+  bereichVerknuepfungen(bereichId?: string): Promise<BereichVerknuepfung[]>;
+  bereichVerknuepfen(a: string, b: string): Promise<void>;
+  bereichEntknuepfen(a: string, b: string): Promise<void>;
+  mindmapDaten(): Promise<MindmapDaten>;
 
   uploadStarten(pfad: string): Promise<UploadZiel>;
   dateiSpeichern(pfad: string, daten: Uint8Array, typ: string): Promise<void>;

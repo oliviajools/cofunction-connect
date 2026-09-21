@@ -7,10 +7,12 @@ import { demoDaten, type DemoStore } from "./demo-seed";
 import type {
   Bereich,
   BereichArt,
+  BereichVerknuepfung,
   Eintrag,
   EintragFilter,
   EintragPatch,
   EintragVoll,
+  MindmapDaten,
   NeuerBereich,
   NeuerEintrag,
   Profil,
@@ -254,6 +256,40 @@ export class DemoRepo implements Repo {
   }
   async entknuepfen(a: string, b: string) {
     this.s.verknuepfungen = this.s.verknuepfungen.filter((v) => !((v.a === a && v.b === b) || (v.a === b && v.b === a)));
+  }
+
+  async bereichVerknuepfungen(bereichId?: string) {
+    const v = this.s.bereichVerknuepfungen.filter((x) => !bereichId || x.a === bereichId || x.b === bereichId);
+    return v.map((x) => ({ a: x.a, b: x.b } as BereichVerknuepfung));
+  }
+  async bereichVerknuepfen(a: string, b: string) {
+    if (a === b || this.s.bereichVerknuepfungen.some((v) => (v.a === a && v.b === b) || (v.a === b && v.b === a))) return;
+    this.s.bereichVerknuepfungen.push({ a, b });
+  }
+  async bereichEntknuepfen(a: string, b: string) {
+    this.s.bereichVerknuepfungen = this.s.bereichVerknuepfungen.filter((v) => !((v.a === a && v.b === b) || (v.a === b && v.b === a)));
+  }
+
+  async mindmapDaten(): Promise<MindmapDaten> {
+    const knoten = this.s.bereiche.filter((b) => this.sichtbar(b)).map((b) => ({
+      id: b.id,
+      name: b.name,
+      art: b.art,
+      sichtbarkeit: b.sichtbarkeit,
+    }));
+    const ids = new Set(knoten.map((k) => k.id));
+    const kanten: MindmapDaten["kanten"] = [];
+    for (const b of this.s.bereiche) {
+      if (b.elternId && ids.has(b.elternId) && ids.has(b.id)) {
+        kanten.push({ von: b.elternId, nach: b.id, typ: "eltern" });
+      }
+    }
+    for (const v of this.s.bereichVerknuepfungen) {
+      if (ids.has(v.a) && ids.has(v.b)) {
+        kanten.push({ von: v.a, nach: v.b, typ: "explizit" });
+      }
+    }
+    return { knoten, kanten };
   }
 
   async uploadStarten(pfad: string): Promise<UploadZiel> {

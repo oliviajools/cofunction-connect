@@ -12,6 +12,7 @@ Die Plattform, auf der das Wissen des CoFunction-Teams zusammenläuft – gespro
 | **Weiterleiten** | Mails an `wissen@…` landen im Eingang, an `wissen+<bereich>@…` direkt im Bereich. `#tag` im Betreff setzt Tags. Nur Teammitglieder als Absender. |
 | **Eingang** | Alles ohne Ziel. Händische Zuordnung; jede Zuordnung wird protokolliert (Maßstab für spätere KI-Vorschläge). |
 | **Bereiche** | Projekte, Areas, Ressourcen, Archiv (PARA). Pro Bereich: Wissen, Meetings, Brainstorm. Privat oder fürs Team. |
+| **Mindmap** | Bereiche und Projekte als interaktiver Graph: Eltern-Kind-Hierarchie plus eigene Verknüpfungen. Pan, Zoom, Knoten ziehen, Klick öffnet den Bereich. |
 | **Meetings** | Transkript mit Sprechertrennung und Zeitmarken, synchron zur Aufnahme. Protokoll von Hand: Entscheidungen, offene Punkte, Wissensbausteine aus markierten Stellen. |
 | **Regelwerk** | „Begriff → Tag“, live testbar, auf alle Einträge neu anwendbar. Plus Übersicht aller Mail-Adressen. |
 | **Suche** | Volltext (deutsche Wortformen) über Titel, Transkripte, PDF-Texte; Filter nach Art und Tag. |

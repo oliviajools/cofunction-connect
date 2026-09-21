@@ -8,10 +8,12 @@ import { slugAus, tagName } from "../regeln";
 import type {
   Bereich,
   BereichArt,
+  BereichVerknuepfung,
   Eintrag,
   EintragFilter,
   EintragPatch,
   EintragVoll,
+  MindmapDaten,
   NeuerBereich,
   NeuerEintrag,
   Profil,
@@ -345,6 +347,49 @@ export class SupabaseRepo implements Repo {
   async entknuepfen(a: string, b: string) {
     const [von, nach] = a < b ? [a, b] : [b, a];
     pruefe(await this.db.from("verknuepfungen").delete().eq("von_id", von).eq("nach_id", nach));
+  }
+
+  async bereichVerknuepfungen(bereichId?: string) {
+    let q = this.db.from("bereich_verknuepfungen").select("von_id, nach_id");
+    if (bereichId) q = q.or(`von_id.eq.${bereichId},nach_id.eq.${bereichId}`);
+    const zeilen = pruefe(await q) as Zeile[];
+    return zeilen.map((z) => ({ a: z.von_id, b: z.nach_id }) as BereichVerknuepfung);
+  }
+  async bereichVerknuepfen(a: string, b: string) {
+    if (a === b) return;
+    const [von, nach] = a < b ? [a, b] : [b, a];
+    pruefe(await this.db.from("bereich_verknuepfungen").upsert({ von_id: von, nach_id: nach }, { onConflict: "von_id,nach_id", ignoreDuplicates: true }));
+  }
+  async bereichEntknuepfen(a: string, b: string) {
+    const [von, nach] = a < b ? [a, b] : [b, a];
+    pruefe(await this.db.from("bereich_verknuepfungen").delete().eq("von_id", von).eq("nach_id", nach));
+  }
+
+  async mindmapDaten(): Promise<MindmapDaten> {
+    const bereiche = (pruefe(await this.db.from("bereiche").select("id, name, art, sichtbarkeit, eltern_id")) as Zeile[]).map((z) => ({
+      id: z.id,
+      name: z.name,
+      art: z.art,
+      sichtbarkeit: z.sichtbarkeit,
+      elternId: z.eltern_id,
+    }));
+    const ids = new Set(bereiche.map((b) => b.id));
+    const verknuepfungen = pruefe(await this.db.from("bereich_verknuepfungen").select("von_id, nach_id")) as Zeile[];
+    const kanten: MindmapDaten["kanten"] = [];
+    for (const b of bereiche) {
+      if (b.elternId && ids.has(b.elternId)) {
+        kanten.push({ von: b.elternId, nach: b.id, typ: "eltern" });
+      }
+    }
+    for (const v of verknuepfungen) {
+      if (ids.has(v.von_id) && ids.has(v.nach_id)) {
+        kanten.push({ von: v.von_id, nach: v.nach_id, typ: "explizit" });
+      }
+    }
+    return {
+      knoten: bereiche.map((b) => ({ id: b.id, name: b.name, art: b.art, sichtbarkeit: b.sichtbarkeit })),
+      kanten,
+    };
   }
 
   async uploadStarten(pfad: string): Promise<UploadZiel> {

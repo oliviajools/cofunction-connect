@@ -13,7 +13,7 @@ Jeder Schritt funktioniert für sich; die App läuft schon nach Schritt 2, Trans
    - Name: `cofunction-wissen`
    - Region: **Central EU (Frankfurt)**
    - Datenbank-Passwort sicher ablegen (Passwortmanager)
-2. **Schema einspielen:** SQL Editor → *New query* → Inhalt von `supabase/migrations/0001_grundschema.sql` einfügen → *Run*.
+2. **Schema einspielen:** SQL Editor → *New query* → Inhalt von `supabase/migrations/0001_grundschema.sql` und `supabase/migrations/0002_bereich_verknuepfungen.sql` nacheinander einfügen → jeweils *Run*.
 3. **Anmeldung einstellen:** Authentication →
    - *Sign In / Providers* → **Email** aktiv, **„Allow new users to sign up“ ausschalten** (nur Eingeladene).
    - *URL Configuration* → Site URL = deine Vercel-Adresse (kommt in Schritt 2, z. B. `https://cofunction-connect.vercel.app`); unter *Redirect URLs* zusätzlich `https://<deine-adresse>/auth/callback` und `http://localhost:3000/auth/callback`.
