@@ -29,6 +29,11 @@ export default function Login() {
           )}
         </div>
       </main>
+      <footer className="py-6 text-center text-[13px] text-white/70">
+        <Link href="/rechtliches" className="hover:underline">
+          Impressum & Datenschutz
+        </Link>
+      </footer>
     </div>
   );
 }
