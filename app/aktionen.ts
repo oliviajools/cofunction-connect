@@ -344,3 +344,24 @@ export async function abmelden() {
   }
   redirect("/login");
 }
+
+// ───────────── Team einladen ─────────────
+
+export async function personEinladen(formData: FormData): Promise<Ergebnis> {
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  const name = String(formData.get("name") ?? "").trim().slice(0, 120);
+  if (!z.string().email().safeParse(email).success) return { ok: false, fehler: "Bitte eine gültige E-Mail-Adresse eingeben" };
+  try {
+    const repo = await getRepo();
+    const nutzer = await repo.nutzer();
+    if (nutzer.rolle !== "admin") return { ok: false, fehler: "Nur Admins dürfen Personen einladen" };
+    if (istDemo) return { ok: false, fehler: "Im Demo-Modus können keine Personen eingeladen werden" };
+    const { supabaseAdmin } = await import("@/lib/supabase/admin");
+    const { error } = await supabaseAdmin().auth.admin.inviteUserByEmail(email, { data: name ? { name } : {} });
+    if (error) throw new Error(error.message);
+    neuLaden();
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, fehler: fehlerText(e) };
+  }
+}

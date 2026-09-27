@@ -2,6 +2,7 @@ import { getRepo } from "@/lib/data";
 import { istDemo, mailAdresse, mailWebhookGeheimnis, mistralSchluessel, supabaseGeheimerSchluessel } from "@/lib/config";
 import { abmelden, demoNutzerWechseln } from "@/app/aktionen";
 import { Seitenkopf } from "@/components/bausteine";
+import { PersonEinladen } from "@/components/person-einladen";
 import { IconExport } from "@/components/icons";
 
 export const metadata = { title: "Konto" };
@@ -46,8 +47,9 @@ export default async function Konto() {
               </li>
             ))}
           </ul>
-          {!istDemo && (
-            <p className="mt-3 text-[13px] text-leise">Neue Personen lädst du im Supabase-Dashboard unter Authentication → Users → „Invite user“ ein.</p>
+          {!istDemo && nutzer.rolle === "admin" && <PersonEinladen />}
+          {!istDemo && nutzer.rolle !== "admin" && (
+            <p className="mt-3 text-[13px] text-leise">Neue Personen kann nur ein Admin einladen.</p>
           )}
         </section>
 
