@@ -126,7 +126,31 @@ export class DemoRepo implements Repo {
   }
 
   async eintraege(f: EintragFilter = {}) {
-    const worte = f.suche?.trim() ? f.suche.toLocaleLowerCase("de").split(/\s+/).filter(Boolean) : null;
+    const stamm = (w: string) => (w.length > 3 ? w.replace(/[esn]$/, "") : w);
+    const worte = f.suche?.trim()
+      ? f.suche
+          .toLocaleLowerCase("de")
+          .split(/\s+/)
+          .filter((w) => w.length >= 2)
+          .map(stamm)
+      : null;
+    const suchText = (e: Eintrag) => {
+      const tagNamen = this.s.tags
+        .filter((t) => t.eintragId === e.id)
+        .map((t) => t.name)
+        .join(" ");
+      return `${e.titel} ${e.inhalt} ${e.dateiName ?? ""} ${tagNamen}`.toLocaleLowerCase("de");
+    };
+    const relevanz = (e: Eintrag) => {
+      const text = suchText(e);
+      const titel = e.titel.toLocaleLowerCase("de");
+      let s = 0;
+      for (const w of worte ?? []) {
+        if (titel.includes(w)) s += 3;
+        else if (text.includes(w)) s += 1;
+      }
+      return s;
+    };
     return this.s.eintraege
       .filter((e) => this.sichtbar(e))
       .filter((e) => (f.bereichId === undefined ? true : e.bereichId === f.bereichId))
@@ -137,10 +161,16 @@ export class DemoRepo implements Repo {
       .filter((e) => !f.status || f.status.includes(e.status))
       .filter((e) => {
         if (!worte) return true;
-        const t = `${e.titel} ${e.inhalt}`.toLocaleLowerCase("de");
-        return worte.every((w) => t.includes(w));
+        const text = suchText(e);
+        return worte.every((w) => text.includes(w));
       })
-      .sort((a, b) => b.erstelltAm.localeCompare(a.erstelltAm))
+      .sort((a, b) => {
+        if (worte) {
+          const d = relevanz(b) - relevanz(a);
+          if (d !== 0) return d;
+        }
+        return b.erstelltAm.localeCompare(a.erstelltAm);
+      })
       .slice(0, f.limit ?? 500)
       .map((e) => this.voll(e));
   }
