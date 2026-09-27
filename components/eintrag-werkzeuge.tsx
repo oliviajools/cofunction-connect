@@ -23,6 +23,7 @@ import { dauer } from "@/lib/format";
 import { BereichAuswahl, type BereichOption } from "./zuordnen-form";
 import { IconLink, IconMuell, IconPlus, IconSchloss, IconWiederholen, IconX } from "./icons";
 import { AudioSpieler } from "./audio-spieler";
+import { Markdown } from "./markdown";
 
 // ───────────── Titel & Inhalt ─────────────
 
@@ -54,7 +55,9 @@ export function InhaltEditor({
           </button>
         </div>
         {nurTitel ? null : inhalt ? (
-          <div className="mt-5 text-[15.5px] leading-relaxed whitespace-pre-line max-w-3xl">{inhalt}</div>
+          <div className="mt-5">
+            <Markdown>{inhalt}</Markdown>
+          </div>
         ) : (
           platzhalter && <p className="mt-5 text-[14px] text-leise">{platzhalter}</p>
         )}
