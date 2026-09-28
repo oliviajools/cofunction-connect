@@ -1,10 +1,15 @@
 // Zentrale Konfiguration aus Umgebungsvariablen.
 // Ohne Supabase-Variablen läuft die App im Demo-Modus mit Beispieldaten im Speicher.
 
-export const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+export const supabaseUrl =
+  process.env.NEXT_PUBLIC_SUPABASE_URL ??
+  process.env.SUPABASE_URL ??
+  "";
+
 export const supabaseOeffentlicherSchluessel =
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
+  process.env.SUPABASE_ANON_KEY ??
   "";
 
 /** Nur auf dem Server verwenden (Mail-Eingang, Hintergrundverarbeitung). */
