@@ -68,10 +68,8 @@ export async function verarbeiteEintrag(repo: Repo, id: string): Promise<void> {
     const audio = e.audioPfad ?? (e.dateiPfad && istAudio(e.dateiTyp, e.dateiName) ? e.dateiPfad : null);
     if (audio && !e.transkript) {
       try {
-        const url = await repo.dateiUrl(audio, 3600);
-        const daten = url?.startsWith("https://") ? null : await repo.dateiLesen(audio);
+        const daten = await repo.dateiLesen(audio);
         const ergebnis = await transkribiere({
-          dateiUrl: url,
           daten,
           dateiName: e.dateiName ?? "aufnahme.webm",
           sprecherTrennen: e.art === "meeting",

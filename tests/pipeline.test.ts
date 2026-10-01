@@ -47,6 +47,7 @@ describe("Pipeline", () => {
       }),
     );
     const repo = new DemoRepo();
+    const urlAufruf = vi.spyOn(repo, "dateiUrl").mockResolvedValue("https://speicher.example/m.webm");
     await repo.dateiSpeichern("u-olivia/2026/m.webm", new Uint8Array([1]), "audio/webm");
     const e = await repo.eintragAnlegen({
       art: "meeting",
@@ -60,6 +61,7 @@ describe("Pipeline", () => {
     const fertig = await repo.eintrag(e.id);
     expect(aufrufe[0].url).toBe("https://api.mistral.ai/v1/audio/transcriptions");
     expect(aufrufe[0].body).toBeInstanceOf(FormData);
+    expect(urlAufruf).not.toHaveBeenCalled();
     expect(fertig?.status).toBe("bereit");
     expect(fertig?.transkript?.map((s) => s.sprecher)).toEqual(["Sprecher 1", "Sprecher 2", "Sprecher 1"]);
     expect(fertig?.titel).toBe("Die Belastung im Hockey steigt");

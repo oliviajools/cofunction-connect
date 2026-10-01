@@ -62,9 +62,7 @@ export function segmenteAlsText(segmente: Segment[]): string {
 }
 
 export async function transkribiere(opts: {
-  /** Öffentlich/signiert erreichbare URL der Audiodatei (bevorzugt, spart Datenübertragung) */
-  dateiUrl?: string | null;
-  /** Alternativ: die Bytes selbst */
+  /** Audiodatei als Bytes für die Multipart-Übertragung */
   daten?: Uint8Array | null;
   dateiName?: string;
   sprecherTrennen?: boolean;
@@ -73,31 +71,15 @@ export async function transkribiere(opts: {
   const schluessel = mistralSchluessel();
   if (!schluessel) throw new TranskriptionNichtKonfiguriert();
 
-  const sprecher = opts.sprecherTrennen ?? true;
-  let antwort: Response;
+  if (!opts.daten) throw new Error("Keine Audiodaten für die Transkription.");
 
-  if (opts.dateiUrl && /^https:\/\//.test(opts.dateiUrl)) {
-    antwort = await fetch(ENDPUNKT, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${schluessel}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: mistralModell(),
-        file_url: opts.dateiUrl,
-        diarize: sprecher,
-        timestamp_granularities: ["segment"],
-        ...(opts.fachvokabular?.length ? { context_bias: opts.fachvokabular.slice(0, 100) } : {}),
-      }),
-    });
-  } else if (opts.daten) {
-    const form = new FormData();
-    form.append("model", mistralModell());
-    form.append("file", new Blob([opts.daten as BlobPart]), opts.dateiName ?? "aufnahme.webm");
-    form.append("diarize", String(sprecher));
-    form.append("timestamp_granularities", "segment");
-    antwort = await fetch(ENDPUNKT, { method: "POST", headers: { Authorization: `Bearer ${schluessel}` }, body: form });
-  } else {
-    throw new Error("Keine Audiodaten für die Transkription.");
-  }
+  const form = new FormData();
+  form.append("model", mistralModell());
+  form.append("file", new Blob([opts.daten as BlobPart]), opts.dateiName ?? "aufnahme.webm");
+  form.append("diarize", String(opts.sprecherTrennen ?? true));
+  form.append("timestamp_granularities", "segment");
+  for (const wort of opts.fachvokabular?.slice(0, 100) ?? []) form.append("context_bias", wort);
+  const antwort = await fetch(ENDPUNKT, { method: "POST", headers: { Authorization: `Bearer ${schluessel}` }, body: form });
 
   if (!antwort.ok) {
     const text = await antwort.text().catch(() => "");
