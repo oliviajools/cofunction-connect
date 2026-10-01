@@ -54,7 +54,7 @@ app/
   api/eingang/mail  Mail-Webhook (Postmark)
   api/verarbeitung  Cron-Sicherheitsnetz
   api/export        ZIP-Export
-  login, auth/      Anmeldung per Einmal-Code
+  login, auth/      Anmeldung per E-Mail und Passwort
 lib/
   data/types.ts     Domänenmodell + Repo-Schnittstelle
   data/demo-repo.ts Demo: im Speicher, mit Beispieldaten (spiegelt die Rechte)

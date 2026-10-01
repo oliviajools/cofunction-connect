@@ -14,18 +14,9 @@ Jeder Schritt funktioniert für sich; die App läuft schon nach Schritt 2, Trans
    - Region: **Central EU (Frankfurt)**
    - Datenbank-Passwort sicher ablegen (Passwortmanager)
 2. **Schema einspielen:** SQL Editor → *New query* → Inhalt von `supabase/migrations/0001_grundschema.sql` und `supabase/migrations/0002_bereich_verknuepfungen.sql` nacheinander einfügen → jeweils *Run*.
-3. **Anmeldung einstellen:** Authentication →
-   - *Sign In / Providers* → **Email** aktiv, **„Allow new users to sign up“ ausschalten** (nur Eingeladene).
-   - *URL Configuration* → Site URL = deine Vercel-Adresse (kommt in Schritt 2, z. B. `https://cofunction-connect.vercel.app`); unter *Redirect URLs* zusätzlich `https://<deine-adresse>/auth/callback` und `http://localhost:3000/auth/callback`.
-   - *Emails → Templates → Magic Link*: den Code in die Mail aufnehmen, z. B.
-     ```html
-     <h2>Anmeldung CoFunction Wissen</h2>
-     <p>Dein Code: <strong style="font-size:22px;letter-spacing:4px">{{ .Token }}</strong></p>
-     <p>Oder direkt: <a href="{{ .ConfirmationURL }}">Anmelden</a></p>
-     ```
-     Der Code ist wichtig für die installierte Handy-App: Links aus Mails öffnen dort den normalen Browser statt der App.
-4. **Dich selbst einladen:** Authentication → Users → *Invite user* → deine Adresse. Die **erste Person wird automatisch Admin.**
-   Den Namen kannst du danach in Table Editor → `profile` anpassen (z. B. „Olivia B.“, Kürzel „OB“).
+3. **Anmeldung einstellen:** Authentication → *Sign In / Providers* → **Email** aktiv und **„Allow new users to sign up“ ausschalten**.
+4. **Dich selbst anlegen:** Authentication → Users → *Add user → Create new user* → E-Mail-Adresse und ein sicheres Passwort eintragen und die E-Mail als bestätigt markieren. Die **erste Person wird automatisch Admin.**
+   Weitere Personen für den Passwort-Login ebenfalls auf diesem Weg anlegen. Den Namen kannst du danach in Table Editor → `profile` anpassen (z. B. „Olivia B.“, Kürzel „OB“).
 5. **Startdaten:** nach deiner ersten Anmeldung (Schritt 3) im SQL Editor `supabase/startdaten.sql` ausführen – legt die fünf Leistungsfelder als Areas, Ressourcen, Archiv und ein erstes Regelwerk an.
 6. **Schlüssel notieren:** Project Settings → API
    - Project URL → `NEXT_PUBLIC_SUPABASE_URL`
@@ -104,8 +95,7 @@ npm run dev
 
 | Problem | Lösung |
 |---|---|
-| „Diese Adresse ist nicht eingeladen“ | Person in Supabase unter Authentication → Users einladen. |
-| Kein Code in der Mail | Magic-Link-Vorlage um `{{ .Token }}` ergänzen (Schritt 1.3). |
+| Anmeldung schlägt fehl | Unter Authentication → Users prüfen, ob die Person bestätigt ist und ein Passwort besitzt. |
 | Aufnahme bleibt „Ohne Transkription“ | `MISTRAL_API_KEY` fehlt oder kein Redeploy danach → „Erneut verarbeiten“. |
 | Eintrag hängt auf „Wird verarbeitet …“ | Nach 10 Minuten erscheint „Erneut verarbeiten“. Zusätzlich räumt der tägliche Cron-Job auf. |
 | Datei zu groß | Supabase Free: 50 MB pro Datei (≈ 2 h Meeting im App-Format). Im Pro-Tarif höher einstellbar. |
